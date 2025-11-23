@@ -1,0 +1,17 @@
+### 1) GET /students
+GET http://localhost:3000/students
+
+### 2) POST /students
+POST http://localhost:3000/students
+Content-Type: application/json
+
+{
+    "id": 3,
+    "name": "Maija",
+    "age": 21,
+    "creditPoints": 120,
+    "campus": "Center"
+}
+
+### 3) DELETE /students/:id
+DELETE http://localhost:3000/students/3

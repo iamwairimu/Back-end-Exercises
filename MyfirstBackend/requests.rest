@@ -1,0 +1,20 @@
+### 1) Get all students
+GET http://localhost:3000/students
+
+### 2) Get a student by ID
+GET http://localhost:3000/students/1
+
+### 3) Create a new student
+POST http://localhost:3000/students
+Content-Type: application/json
+{
+  "name": "John",
+  "id": 6,
+  "creditPoints": "23"
+}
+
+### 4) Get John with ID
+GET http://localhost:3000/students/6
+
+### 5) Try to get non existing student
+GET http://localhost:3000/students/8 

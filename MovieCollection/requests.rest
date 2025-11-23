@@ -1,0 +1,30 @@
+### 1) GET /movies
+GET http://localhost:3000/movies
+
+### 2) GET /movies/:id
+GET http://localhost:3000/movies/2
+
+### 3) POST /movies
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+    "id": "4",
+    "title": "Stranger Things",
+    "director": "The Duffer Brothers",
+    "year": 2016
+}
+
+### 4) PUT /movies
+PUT http://localhost:3000/movies/2
+Content-Type: application/json
+
+{
+    "id": "2",
+    "title": "The Matrix ",
+    "director": "The Wachowskis",
+    "year": 1999
+}
+
+### 5) DELETE /movies/:id
+DELETE http://localhost:3000/movies/4

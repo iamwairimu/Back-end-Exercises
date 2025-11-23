@@ -1,0 +1,76 @@
+### 1) GET /movies
+GET http://localhost:3000/movies
+
+### 2) GET /movies with year filter
+GET http://localhost:3000/movies?year=2010
+
+### 3) GET /movies with director filter
+GET http://localhost:3000/movies?director=The Wachowskis
+
+### 4) GET /movies with combined filters
+GET http://localhost:3000/movies?year=2010&director=Christopher Nolan
+
+### 5) GET /movies/:id  that exists
+GET http://localhost:3000/movies/3
+
+### 6) GET /movies/:id which doesn't exist
+GET http://localhost:3000/movies/7
+
+### 7) POST /movies with valid data
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "New Movie",
+  "director": "New Director",
+  "year": 2023
+}
+
+### 8) POST /movies with missing fields
+POST http://localhost:3000/movies
+Content-Type: application/json
+
+{
+  "title": "",
+  "director": "Director",
+  "year": 2023
+}
+
+### 9) PUT /movies/:id that exists
+PUT http://localhost:3000/movies/2
+Content-Type: application/json
+
+{
+  "title": "Inception",
+  "director": "Christopher Nolan",
+  "year": 2010
+}
+
+### 10) PUT /movies/:id that doesn't have data in all fields
+PUT http://localhost:3000/movies/1
+Content-Type: application/json
+
+{
+  "title": "",
+  "director": "Christopher Nolan",
+  "year": 2010
+}
+
+### 11) PUT /movies/:id whose id doesn't exist
+PUT http://localhost:3000/movies/7
+Content-Type: application/json
+
+{
+  "title": "Non-existing",
+  "director": "Director",
+  "year": 2023
+}
+
+### 12) DELETE /movies/:id that exists
+DELETE http://localhost:3000/movies/1
+
+### 13) DELETE /movies/:id whose id doesn't exist
+DELETE http://localhost:3000/movies/7
+
+### 14) Catch-All 404
+GET http://localhost:3000/nonexistent
