@@ -6,6 +6,10 @@ dotenv.config();
 import express from "express";
 import { MongoClient } from "mongodb";
 
+// import swagger
+import swaggerUi from "swagger-ui-express";
+import swaggerSpec from "./swagger.js";
+
 // create express app
 const app = express();
 app.use(express.json());
@@ -59,7 +63,11 @@ await initialDatabase();
 // start the server
 app.listen(port, () => {
   console.log(`Server listening on http://localhost:${port}`);
+  console.log(`Swagger UI available at http://localhost:${port}/api-docs`);
 });
+
+// Swagger UI route
+app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 
 // GET all movies
 // Also using async as DB connection is over the cloud
@@ -144,13 +152,10 @@ app.put("/movies/:id", async (req, res) => {
     const id = parseInt(req.params.id);
     if (isNaN(!id)) return res.status(400).json({ error: "Invalid id" }); // return error as JSON with bad request 400
     // Update the movie in MongoDB
-    const existing = await movieCollection.updateOne(
-      { id },
-      { $set: req.body }
-    );
-    if (!existing) return res.status(404).json({ error: "Movie not found" }); // return error as JSON with not found 404
+    const movie = await movieCollection.updateOne({ id }, { $set: req.body });
+    if (!movie) return res.status(404).json({ error: "Movie not found" }); // return error as JSON with not found 404
     // update and validate
-    const updatedMovie = { ...existing, ...req.body };
+    const updatedMovie = { ...movie, ...req.body };
     const error = validate_movie(updatedMovie);
     if (error) {
       return res.status(400).json({ error }); // return error as JSON with bad request 400
