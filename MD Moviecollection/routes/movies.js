@@ -14,10 +14,10 @@ import { authenticateToken } from "../middleware/authenticateToken.js";
 const router = Router();
 
 // Define all REST Endpoints for the movies and add middleware for validation and logging
-router.get("/", logger, getMovies);
+router.get("/", logger, authenticateToken, getMovies);
 router.get("/:id", authenticateToken, getMovieById);
-router.post("/", validateMovie, createMovie);
-router.put("/:id", validateMovie, updateMovie);
-router.delete("/:id", deleteMovie);
+router.post("/", authenticateToken, validateMovie, createMovie);
+router.put("/:id", authenticateToken, validateMovie, updateMovie);
+router.delete("/:id", authenticateToken, deleteMovie);
 
 export default router;

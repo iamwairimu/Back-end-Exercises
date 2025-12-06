@@ -1,26 +1,42 @@
 import jwt from "jsonwebtoken";
-
-const JWT_SECRET = "my_secret_key254";
+import "dotenv/config"; // Make sure to load environment variables
 
 // authenticate token
 export const authenticateToken = (req, res, next) => {
-  // get the token from the header
+  // Get the token from the header
   const authHeader = req.headers["authorization"];
+
+  // Check if authorization header exists and is in the correct format
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.sendStatus(400).json({ error: "Invalid token" }); // return error if no token
+    return res.status(401).json({
+      error: "Unauthorized: No token provided or invalid format",
+    });
   }
 
-  // get the token
-  const token = authHeader.substring(7); // remove the "Bearer " prefix
+  // Extract the token
+  const token = authHeader.substring(7); // Remove "Bearer " prefix
 
-  // verify the token
-  jwt.verify(token, JWT_SECRET, (err, user) => {
-    if (err) {
-      return res.sendStatus(401).json({ error: "Invalid token" });
+  if (!token) {
+    return res.status(401).json({
+      error: "Unauthorized: No token provided",
+    });
+  }
+
+  // Verify the token
+  jwt.verify(
+    token,
+    process.env.JWT_SECRET || "my_secret_key254",
+    (err, user) => {
+      if (err) {
+        console.error("JWT Verification Error:", err);
+        return res.status(403).json({
+          error: "Forbidden: Invalid or expired token",
+        });
+      }
+
+      // Add the user to the request object
+      req.user = user;
+      next();
     }
-
-    // add the user to the request
-    req.user = user;
-    next();
-  });
+  );
 };

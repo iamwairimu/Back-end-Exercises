@@ -5,7 +5,7 @@ import { getMovieCollection } from "../config/dbConfig.js";
 export const getMovies = async (req, res) => {
   try {
     // get the movie collection
-    const collection = getMovieCollection();
+    const collection = await getMovieCollection();
     if (!collection) {
       console.error("Movie collection is not available");
       return res.status(500).json({ error: "Database not initialized" });
@@ -48,7 +48,7 @@ export const getMovies = async (req, res) => {
 export const getMovieById = async (req, res) => {
   try {
     // get the movie collection
-    const collection = getMovieCollection();
+    const collection = await getMovieCollection();
     if (!collection) {
       console.error("Movie collection is not available");
       return res.status(500).json({ error: "Database not initialized" });
@@ -72,7 +72,7 @@ export const getMovieById = async (req, res) => {
 export const createMovie = async (req, res) => {
   try {
     // get the movie collection
-    const collection = getMovieCollection();
+    const collection = await getMovieCollection();
     if (!collection) {
       console.error("Movie collection is not available");
       return res.status(500).json({ error: "Database not initialized" });
@@ -96,32 +96,38 @@ export const createMovie = async (req, res) => {
 // Controller function that updates a movie by id
 export const updateMovie = async (req, res) => {
   try {
-    // find the movie with the given id and update if found
+    const collection = await getMovieCollection(); // Add await here
     const id = parseInt(req.params.id);
-    if (isNaN(!id)) return res.status(400).json({ error: "Invalid id" }); // return error as JSON with bad request 400
-    // Update the movie in MongoDB
-    const movie = await collection.updateOne({ id }, { $set: req.body });
-    if (!movie) return res.status(404).json({ error: "Movie not found" }); // return error as JSON with not found 404
-    // update the movie
-    const updatedMovie = { ...movie, ...req.body };
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
 
-    // delete the id as we won't update it
-    delete updatedMovie._id;
-    await collection.updateOne({ id }, { $set: updatedMovie });
-    res.status(200).json(updatedMovie); // return updated movie as JSON with ok 200
+    const { title, director, year } = req.body;
+    const result = await collection.updateOne(
+      { id },
+      { $set: { title, director, year } }
+    );
+
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: "Movie not found" });
+    }
+
+    res.json({ message: "Movie updated successfully" });
   } catch (error) {
     console.error("Error updating movie:", error);
-    res.status(500).json({ error: "Failed to update movie" }); // return error as JSON with internal server error 500
+    res.status(500).json({ error: "Failed to update movie" });
   }
 };
 
 // Controller function that deletes a movie by id
 export const deleteMovie = async (req, res) => {
   try {
-    // find the movie with the given id and delete if found
+    const collection = await getMovieCollection(); // Add await here
     const id = parseInt(req.params.id);
-    if (isNaN(!id)) return res.status(400).json({ error: "Invalid id" }); // return error as JSON with bad request 400
-    // Delete the movie from MongoDB
+    if (isNaN(id)) {
+      return res.status(400).json({ error: "Invalid id" });
+    }
+
     const result = await collection.deleteOne({ id });
     if (result.deletedCount === 0) {
       res.status(404).json({ error: "Movie not found" }); // return error as JSON with not found 404

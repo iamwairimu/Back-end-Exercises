@@ -1,62 +1,53 @@
 @baseUrl = http://localhost:3000
 
-### 1. Authentication - Signup
+### 1. create a new user
 POST {{baseUrl}}/auth/signup
 Content-Type: application/json
 
 {
-  "username": "Pigglets",
+  "username": "bacons",
   "password": "testpass123"
 }
 
-### 2. Authentication - Login
+### 2. Login and get token
 # @name login
 POST {{baseUrl}}/auth/login
-Content-Type:  application/json
+Content-Type: application/json
 
 {
-  "username": "Pigglets",
+  "username": "bacons",
   "password": "testpass123"
 }
 
-### Get the auth token from login response
+### 3. Save the token from the login response
 @authToken = {{login.response.body.token}}
 
-### 3. Test Unauthorized Access
+### 4. Create a new movie (using the token from above)
+POST {{baseUrl}}/movies
+Content-Type: application/json
+Authorization: Bearer {{authToken}}
+
+{
+  "title": "Stranger Things",
+  "director": "The Duffer Brothers",
+  "year": 2016
+}
+
+### 5. Get all movies
 GET {{baseUrl}}/movies
-Content-Type: application/json
-Authorization: Bearer invalid_token_here
+Authorization: Bearer {{authToken}}
 
-### 4. Test Invalid Login
-POST {{baseUrl}}/auth/login
+### 6. Update movie
+PUT {{baseUrl}}/movies/1
 Content-Type: application/json
+Authorization: Bearer {{authToken}}
 
 {
-  "username": "wronguser",
-  "password": "wrongpass"
+  "title": "Stranger Things",
+  "director": "The duffer brothers",
+  "year": 2016
 }
 
-### 5. Test Invalid Signup with missing fields
-POST {{baseUrl}}/auth/signup
-Content-Type: application/json
-
-{
-  "username": ""
-}
-### 6. create a new user
-POST {{baseUrl}}/auth/signup
-Content-Type: application/json
-
-{
-  "username": "bacons",
-  "password": "testpass123"
-}
-
-### 7. login with the new user
-POST {{baseUrl}}/auth/login
-Content-Type: application/json
-
-{
-  "username": "bacons",
-  "password": "testpass123"
-}
+### 7. Delete movie
+DELETE {{baseUrl}}/movies/1
+Authorization: Bearer {{authToken}}
