@@ -1,9 +1,31 @@
 // configuration code for the mongoDB
 import { MongoClient } from "mongodb";
+import "dotenv/config";
+
+// log the uri and db name because it is hidden in the logs
+console.log("MongoDB URI:", process.env.MONGODB_URI ? "Found" : "Missing");
+console.log("DB Name:", process.env.MONGODB_DBNAME || "Not set");
 
 // Read environment variables
 const uri = process.env.MONGODB_URI;
 const dbName = process.env.MONGODB_DBNAME;
+
+//validation
+if (!uri) {
+  console.error("MONGODB_URI is not defined in environment variables");
+  process.exit(1);
+}
+
+if (!dbName) {
+  console.error("MONGODB_DBNAME is not defined in environment variables");
+  process.exit(1);
+}
+
+console.log(
+  "Connecting to MongoDB with URI:",
+  uri.replace(/\/\/[^:]+:[^@]+@/, "//***:***@")
+); // Hide credentials in logs
+console.log("Using database:", dbName);
 
 // Create a new MongoClient
 const client = new MongoClient(uri);

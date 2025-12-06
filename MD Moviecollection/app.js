@@ -1,11 +1,11 @@
-// access .env file
-import dotenv from "dotenv";
-dotenv.config();
+// access environment variables
+import "dotenv/config";
 
 // import express and routes
 import express from "express";
 import moviesRouter from "./routes/movies.js";
 import { getDatabase } from "./config/dbConfig.js";
+import authenticationRouter from "./routes/authentication.js";
 
 // initialize the database
 await getDatabase();
@@ -13,7 +13,10 @@ await getDatabase();
 // create express app
 const app = express();
 app.use(express.json());
+
+// use middleware
 app.use("/movies", moviesRouter);
+app.use("/auth", authenticationRouter);
 
 // Read environment variables
 const port = process.env.PORT;

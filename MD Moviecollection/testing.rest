@@ -1,0 +1,62 @@
+@baseUrl = http://localhost:3000
+
+### 1. Authentication - Signup
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "Pigglets",
+  "password": "testpass123"
+}
+
+### 2. Authentication - Login
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type:  application/json
+
+{
+  "username": "Pigglets",
+  "password": "testpass123"
+}
+
+### Get the auth token from login response
+@authToken = {{login.response.body.token}}
+
+### 3. Test Unauthorized Access
+GET {{baseUrl}}/movies
+Content-Type: application/json
+Authorization: Bearer invalid_token_here
+
+### 4. Test Invalid Login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "wronguser",
+  "password": "wrongpass"
+}
+
+### 5. Test Invalid Signup with missing fields
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": ""
+}
+### 6. create a new user
+POST {{baseUrl}}/auth/signup
+Content-Type: application/json
+
+{
+  "username": "bacons",
+  "password": "testpass123"
+}
+
+### 7. login with the new user
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "username": "bacons",
+  "password": "testpass123"
+}

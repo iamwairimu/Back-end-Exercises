@@ -1,18 +1,21 @@
 import { Router } from "express";
-import { getMovies } from "../controllers/movieController";
-import { getMovieById } from "../controllers/movieController";
-import { createMovie } from "../controllers/movieController";
-import { updateMovie } from "../controllers/movieController";
-import { deleteMovie } from "../controllers/movieController";
-import { validateMovie } from "../middleware/validateMovie";
-import { logger } from "../middleware/logger";
+import {
+  getMovies,
+  getMovieById,
+  createMovie,
+  updateMovie,
+  deleteMovie,
+} from "../controllers/movieController.js";
+import validateMovie from "../middleware/validateMovie.js";
+import logger from "../middleware/logger.js";
+import { authenticateToken } from "../middleware/authenticateToken.js";
 
 // Create the router
 const router = Router();
 
 // Define all REST Endpoints for the movies and add middleware for validation and logging
 router.get("/", logger, getMovies);
-router.get("/:id", getMovieById);
+router.get("/:id", authenticateToken, getMovieById);
 router.post("/", validateMovie, createMovie);
 router.put("/:id", validateMovie, updateMovie);
 router.delete("/:id", deleteMovie);
