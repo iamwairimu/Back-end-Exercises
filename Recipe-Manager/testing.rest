@@ -1,0 +1,106 @@
+@baseUrl = http://localhost:3000
+
+### 1. Register a new user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "testuser",
+  "email": "test@example.com",
+  "password": "password123",
+  "role": "regular"
+}
+
+### 2. Register an admin user
+POST {{baseUrl}}/auth/register
+Content-Type: application/json
+
+{
+  "username": "adminuser",
+  "email": "admin@example.com",
+  "password": "admin123",
+  "role": "admin"
+}
+
+### 3. Login as user
+# @name login
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "test@example.com",
+  "password": "password123"
+}
+
+### 4. Login as admin
+# @name adminLogin
+POST {{baseUrl}}/auth/login
+Content-Type: application/json
+
+{
+  "email": "admin@example.com",
+  "password": "admin123"
+}
+
+### 5. Get current user profile (requires auth)
+GET {{baseUrl}}/auth/me
+Authorization: Bearer {{login.response.body.token}}
+
+### 6. Create a new recipe (requires auth)
+POST {{baseUrl}}/items
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "title": "Test Recipe",
+  "ingredients": ["ingredient 1", "ingredient 2"],
+  "instructions": "Step 1: Do this. Step 2: Do that.",
+  "prepTime": 30,
+  "cookTime": 45,
+  "servings": 4
+}
+
+### 7. Get all recipes
+GET {{baseUrl}}/items
+
+### 8. Get a single recipe
+GET {{baseUrl}}/items/1
+
+### 9. Update a recipe (requires auth - owner or admin)
+PUT {{baseUrl}}/items/1
+Authorization: Bearer {{login.response.body.token}}
+Content-Type: application/json
+
+{
+  "title": "Updated Recipe Title",
+  "ingredients": ["updated ingredient 1", "ingredient 2"],
+  "instructions": "Updated instructions...",
+  "prepTime": 25,
+  "cookTime": 50,
+  "servings": 6
+}
+
+### 10. Delete a recipe (requires auth - owner or admin)
+DELETE {{baseUrl}}/items/1
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+### 11. Get all users (admin only)
+GET {{baseUrl}}/users
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+### 12. Get a single user (admin only)
+GET {{baseUrl}}/users/1
+Authorization: Bearer {{adminLogin.response.body.token}}
+
+### 13. Update user role (admin only)
+PUT {{baseUrl}}/users/1/role
+Authorization: Bearer {{adminLogin.response.body.token}}
+Content-Type: application/json
+
+{
+  "role": "admin"
+}
+
+### 14. Delete user (admin only)
+DELETE {{baseUrl}}/users/1
+Authorization: Bearer {{adminLogin.response.body.token}}
